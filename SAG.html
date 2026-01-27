@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confidence-Gated Player-Coach</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #2980b9;
+            --bg-color: #ffffff;
+            --secondary-bg: #f8f9fa;
+            --text-color: #333333;
+            --max-width: 800px;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+
+        /* --- Header Section --- */
+        header {
+            text-align: center;
+            padding: 3rem 0 2rem;
+            border-bottom: 1px solid #eaeaea;
+        }
+
+        h1 {
+            font-size: 2.25rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+            line-height: 1.2;
+            letter-spacing: -0.02em;
+        }
+
+        .subtitle {
+            font-size: 1.25rem;
+            color: #555;
+            font-weight: 300;
+            margin-bottom: 1.5rem;
+        }
+
+        .authors {
+            font-size: 1.1rem;
+            color: #444;
+            margin-bottom: 0.25rem;
+        }
+
+        .authors strong {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .affiliation {
+            font-size: 1rem;
+            color: #777;
+            margin-bottom: 2rem;
+        }
+
+        .links {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            background-color: #333;
+            color: #fff;
+            padding: 0.6rem 1.4rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .btn:hover {
+            background-color: var(--accent-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        /* --- Content Sections --- */
+        section {
+            padding: 2.5rem 0;
+        }
+
+        h2 {
+            font-size: 1.75rem;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+            text-align: center; /* Center headings like AdaReasoner */
+        }
+
+        h3 {
+            font-size: 1.25rem;
+            color: #2c3e50;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        p {
+            font-size: 1.05rem;
+            text-align: justify;
+            margin-bottom: 1rem;
+            color: #444;
+        }
+
+        /* --- Abstract --- */
+        .abstract-container {
+            background-color: var(--secondary-bg);
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+        }
+
+        /* --- Comparison List --- */
+        .comparison-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .comparison-list li {
+            margin-bottom: 1.2rem;
+            padding: 1.2rem;
+            background: #fff;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            transition: transform 0.2s;
+        }
+
+        .comparison-list li:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+        }
+
+        .problem-tag {
+            display: inline-block;
+            background: #fceceb;
+            color: #c0392b;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-right: 6px;
+        }
+
+        .solution-tag {
+            display: inline-block;
+            background: #eafaf1;
+            color: #27ae60;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-right: 6px;
+        }
+
+        /* --- Equations --- */
+        .math-block {
+            background: #fff;
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid #eee;
+            margin: 1.5rem 0;
+            text-align: center;
+            overflow-x: auto;
+        }
+
+        /* --- Figures --- */
+        .figure-container {
+            margin: 2rem 0;
+            text-align: center;
+        }
+
+        .figure-placeholder {
+            width: 100%;
+            background-color: #eaeaea;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #777;
+            font-weight: 500;
+            min-height: 300px; /* Adjust height based on your image */
+        }
+
+        .figure-img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        .caption {
+            margin-top: 0.8rem;
+            font-size: 0.95rem;
+            color: #666;
+            text-align: center;
+        }
+
+        /* --- Table --- */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+            font-size: 0.95rem;
+            background: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        th, td {
+            padding: 14px 16px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        tr:last-child td { border-bottom: none; }
+
+        .highlight-row {
+            background-color: #f0fdf4; /* Light green */
+        }
+
+        .highlight-row td {
+            font-weight: 500;
+            color: #2c3e50;
+        }
+
+        /* --- Citation --- */
+        .citation-block {
+            background: #f4f6f8;
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            border: 1px solid #e1e4e8;
+            color: #24292e;
+        }
+
+        footer {
+            margin-top: 3rem;
+            text-align: center;
+            padding: 2rem 0;
+            font-size: 0.9rem;
+            color: #888;
+            border-top: 1px solid #eaeaea;
+        }
+
+        footer a { color: var(--text-color); text-decoration: none; }
+        footer a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <header>
+        <h1>Selective Critique is Enough: Cost-Aware Feedback for LLM Agents in Long-Horizon Interactive Environments</h1>
+        <div class="authors">
+            anonymous
+        </div>
+<!--        <div class="affiliation">-->
+<!--            Soongsil University, Seoul, South Korea-->
+<!--        </div>-->
+
+        <div class="links">
+            <a href="https://openreview.net/pdf?id=uVQz9t64cK" class="btn">📄 Paper</a>
+        </div>
+    </header>
+
+    <section>
+        <div class="abstract-container">
+            <h2 style="margin-top: 0; font-size: 1.5rem;">Abstract</h2>
+            <p>
+                Large Language Model (LLM) agents operating in multi-step environments are vulnerable to <strong>Cascading Errors</strong>, where a single initial hallucination leads to irreversible failure. Existing paradigms often struggle to balance reliability with computational efficiency, either relying on post-hoc corrections or expensive continuous oversight.
+            </p>
+            <p>
+                We propose the <strong>Confidence-Gated Player-Coach</strong> framework, a decision-theoretic approach to agent oversight. Our method (1) utilizes robust uncertainty signals to detect risk, (2) triggers the Coach only when the expected risk outweighs the intervention cost, and (3) enables <strong>Self-Evolution</strong> by distilling successful interventions back into the Player. This framework achieves superior performance and token efficiency across benchmarks like ALFWorld and WebShop without requiring additional training data.
+            </p>
+        </div>
+
+        <div class="figure-container">
+            <img src="images/SAG_overview.png" alt="Framework Overview" class="figure-img">
+            <div class="caption">
+                <strong>Figure 1.</strong> The proposed framework. The Confidence Gate triggers external oversight only when high uncertainty is detected. Successful trajectories are then used to fine-tune the Player, creating a cycle of self-improvement.
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>Motivation & Limitations</h2>
+        <p>
+            While current agentic frameworks have made significant strides, they face critical trade-offs between accuracy and cost. We address these limitations directly:
+        </p>
+
+        <ul class="comparison-list">
+            <li>
+                <strong>vs. Single-Agent Loop</strong><br>
+                <span class="problem-tag">Problem</span> Biases reinforce themselves, leading to cascading errors.<br>
+                <span class="solution-tag">Our Solution</span> <strong>External Oversight</strong> breaks the error loop via objective feedback.
+            </li>
+            <li>
+                <strong>vs. Post-hoc Correction</strong><br>
+                <span class="problem-tag">Problem</span> Relies on trial-and-error (resetting after failure), resulting in wasted trials.<br>
+                <span class="solution-tag">Our Solution</span> <strong>Real-time Intervention</strong> corrects errors <em>before</em> failure occurs within the episode.
+            </li>
+            <li>
+                <strong>vs. Continuous Intervention</strong><br>
+                <span class="problem-tag">Problem</span> High inefficiency due to always-on supervision.<br>
+                <span class="solution-tag">Our Solution</span> <strong>Confidence Gating</strong> triggers the Coach only when necessary (Risk > Cost).
+            </li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>Methodology</h2>
+
+        <h3>1. Decision-Theoretic Gating</h3>
+        <p>
+            We frame intervention not as a heuristic, but as a **Cost-Sensitive Decision Making** problem. The Coach is invoked if and only if the risk of failure exceeds the cost of intervention.
+        </p>
+        <div class="math-block">
+            $$g_t = \mathbb{I} \left[ \underbrace{\mathbb{E}[\mathcal{L}_{error}]}_{\text{Risk of Failure}} > \underbrace{C_{interv}}_{\text{Cost of Query}} \right]$$
+        </div>
+
+        <h3>2. Robust Confidence Signals</h3>
+        <p>
+            To ensure robustness across dynamic action spaces, we employ two normalized uncertainty metrics:
+        </p>
+        <div class="links">
+
+            <a href="#" class="btn btn-disabled">📄 Paper [TBD]</a>
+
+            <a href="https://anonymous.4open.science/r/Player-Coach-LLM" class="btn" target="_blank">💻 Code</a>
+        </div>
+
+        <h3>3. Self-Evolution Loop</h3>
+        <p>
+            Successful trajectories—specifically those guided by the Coach—serve as high-quality demonstrations. By fine-tuning the Player on this data, the agent <strong>internalizes</strong> the Coach's reasoning capabilities, progressively evolving from assisted reasoning to full autonomy.
+        </p>
+    </section>
+
+    <section>
+        <h2>Experimental Results</h2>
+        <p>
+            Our method consistently outperforms strong baselines on <strong>ALFWorld</strong>, <strong>BabyAI-Text</strong>, and <strong>WebShop</strong> while maintaining optimal token efficiency.
+        </p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Method</th>
+                    <th>Mechanism</th>
+                    <th>Success Rate (%)</th>
+                    <th>Efficiency</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>ReAct</td>
+                    <td>Single-Agent</td>
+                    <td>64.9</td>
+                    <td>High (Low Accuracy)</td>
+                </tr>
+                <tr>
+                    <td>Reflexion</td>
+                    <td>Retry (Post-hoc)</td>
+                    <td>67.2</td>
+                    <td>Low (Wasted trials)</td>
+                </tr>
+                <tr>
+                    <td>LAC</td>
+                    <td>Continuous</td>
+                    <td>67.1</td>
+                    <td>Very Low (High Cost)</td>
+                </tr>
+                <tr class="highlight-row">
+                    <td>Ours (Base)</td>
+                    <td>Conditional Gating</td>
+                    <td>77.6</td>
+                    <td>Optimal</td>
+                </tr>
+                <tr class="highlight-row" style="background-color: #d1f2eb;">
+                    <td>Ours (+Evolved)</td>
+                    <td>Self-Improving</td>
+                    <td><strong>80.3</strong></td>
+                    <td>High (Zero overhead)</td>
+                </tr>
+            </tbody>
+        </table>
+
+
+    </section>
+
+
+</div>
+
+<footer>
+    <p>&copy; 2025 Heewon Park. All rights reserved.</p>
+</footer>
+
+</body>
+</html>
