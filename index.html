@@ -327,7 +327,7 @@
       margin-top:.9rem;
       font-size:.98rem;
       color:rgba(43, 27, 58, 0.64);
-      text-align:center;
+      text-align:left;
       max-width:920px;
       margin-left:auto;
       margin-right:auto;
@@ -857,7 +857,10 @@
         <ul class="comparison-list">
         <li>
           <strong>Strong Success–Cost Trade-off</strong><br>
-          <img src="figure/updated_chart_alpha.png" alt="success-cost trade-off" class="figure-img zoomable">
+          <div style="display: flex; gap: 1.2rem; justify-content: center; align-items: center; flex-wrap: wrap; margin: 1rem 0;">
+            <img src="figure/updated_chart_alpha.png" alt="success-cost trade-off" class="figure-img zoomable" style="max-width: 400px; flex: 1; min-width: 280px;">
+            <img src="figure/token_efficiency.png" alt="token efficiency" class="figure-img zoomable" style="max-width: 400px; flex: 1; min-width: 280px;">
+          </div>
           SAG achieves a strong success-cost trade-off, maintaining high success rates while using tokens efficiently. This enables performance comparable to always-on critique with a token budget close to no-critique agents.
         </li>
 
